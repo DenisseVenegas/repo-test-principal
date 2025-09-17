@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: testdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://user:password@db:5432/testdb
+      API_KEY: ${API_KEY}
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:
